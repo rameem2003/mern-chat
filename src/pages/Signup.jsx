@@ -1,7 +1,12 @@
 import React, { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase.config";
+import { Link, useNavigate } from "react-router-dom";
+import { InfinitySpin } from "react-loader-spinner";
 import { MdError } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -13,7 +18,7 @@ const Signup = () => {
   const [passerror, setPasserrorErr] = useState(false);
   const [file, setFile] = useState(null);
   const [hide, setHide] = useState(true);
-  const [success, isSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleToggle = () => {
     setHide(!hide);
@@ -23,25 +28,80 @@ const Signup = () => {
     e.preventDefault();
     if (!email) {
       setEmailErr(true);
+      setLoading(false);
     }
     if (!name) {
       setNameErr(true);
+      setLoading(false);
     }
-
-    if (!file) {
-    }
+    // if (!file) {
+    // }
     if (!password) {
       setPasserrorErr(true);
-    }
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      setLoading(false);
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setEmailErr(true);
-    }
+      setLoading(false);
+    } else if (email && name && password) {
+      setLoading(true);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          // ...
 
-    if (email && name && password) {
+          console.log(user);
+
+          toast.success("Signup Successfull", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/login");
+          }, 2000);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          // console.log(errorMessage);
+
+          if (errorMessage.includes("auth/email-already-in-use")) {
+            setEmailErr(true);
+            setLoading(false);
+          }
+
+          if (errorMessage.includes("auth/weak-password")) {
+            setPasserrorErr(true);
+            setLoading(false);
+          }
+
+          // ..
+        });
     }
   };
   return (
     <div className="flex">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="w-1/2 flex items-center justify-end mr-[69px]">
         <div>
           <h1 className="font-nunito font-bold text-[35px] text-primary mb-3">
@@ -61,14 +121,16 @@ const Signup = () => {
                 Email Address
               </label>
               <input
-                className="w-[368px] h-[81px] rounded-lg  border-[1.72px] border-primary font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]"
+                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                  emailerr ? "border-red-500" : "border-primary"
+                }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setEmailErr(false);
                 }}
                 type="email"
                 name=""
-                id=""
+                id="email"
               />
               {emailerr && (
                 <>
@@ -93,14 +155,16 @@ const Signup = () => {
                 Full name
               </label>
               <input
-                className="w-[368px] h-[81px] rounded-lg  border-[1.72px] border-primary font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]"
+                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                  nameerr ? "border-red-500" : "border-primary"
+                }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
                   setName(e.target.value);
                   setNameErr(false);
                 }}
                 type="text"
                 name=""
-                id=""
+                id="name"
               />
               {nameerr && (
                 <>
@@ -123,14 +187,16 @@ const Signup = () => {
                 Password
               </label>
               <input
-                className="w-[368px] h-[81px] rounded-lg  border-[1.72px] border-primary font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]"
+                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                  passerror ? "border-red-500" : "border-primary"
+                }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setPasserrorErr(false);
                 }}
                 type={hide ? "password" : "text"}
                 name=""
-                id=""
+                id="pass"
               />
 
               {hide ? (
@@ -173,9 +239,14 @@ const Signup = () => {
               />
             </div>
 
-            {success ? (
-              <div className=" flex justify-center w-[368px]">
-                <h1>Load</h1>
+            {loading ? (
+              <div className=" flex items-center justify-center w-[386px] ">
+                <InfinitySpin
+                  visible={true}
+                  width="200"
+                  color="#5f35f5"
+                  ariaLabel="infinity-spin-loading"
+                />
               </div>
             ) : (
               <button

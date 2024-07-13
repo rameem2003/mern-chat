@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase.config";
+import { Link, useNavigate } from "react-router-dom";
+import { InfinitySpin } from "react-loader-spinner";
 import { MdError } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,7 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passerror, setPasserrorErr] = useState(false);
   const [hide, setHide] = useState(true);
-  const [success, isSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleToggle = () => {
     setHide(!hide);
   };
@@ -22,21 +27,68 @@ const Login = () => {
     e.preventDefault();
     if (!email) {
       setEmailErr(true);
+      setLoading(false);
     }
 
     if (!password) {
       setPasserrorErr(true);
-    }
-
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      setLoading(false);
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setEmailErr(true);
-    }
+      setLoading(false);
+    } else if (email && password) {
+      setLoading(true);
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
 
-    if (email && password) {
+          // ...
+
+          toast.success("Login Successfull", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+
+          setTimeout(() => {
+            setLoading(false);
+            navigate("/");
+          }, 2000);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          console.log(errorMessage);
+
+          if (errorMessage.includes("auth/invalid-credential")) {
+            setEmailErr(true);
+            setPasserrorErr(true);
+            setLoading(false);
+          }
+        });
     }
   };
   return (
     <div className="flex">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="w-1/2 flex items-center justify-end mr-[215px]">
         <div>
           <h1 className="font-nunito font-bold text-[35px] text-primary mb-3">
@@ -67,7 +119,7 @@ const Login = () => {
                 }}
                 type="email"
                 name=""
-                id=""
+                id="email"
               />
               {emailerr && (
                 <>
@@ -94,7 +146,7 @@ const Login = () => {
                 }}
                 type={hide ? "password" : "text"}
                 name=""
-                id=""
+                id="pass"
               />
 
               {hide ? (
@@ -113,7 +165,9 @@ const Login = () => {
 
               {passerror && (
                 <>
-                  <p className="text-red-600">Password field is empty</p>
+                  <p className="text-red-600">
+                    Password field is empty or invalid password
+                  </p>
                   <MdError
                     size={25}
                     className="text-red-600 absolute top-[28px] right-[85px]"
@@ -122,9 +176,16 @@ const Login = () => {
               )}
             </div>
 
-            {success ? (
+            {loading ? (
               <div className=" flex justify-center">
-                <h1>Load</h1>
+                <div className=" flex items-center justify-center w-[386px] ">
+                  <InfinitySpin
+                    visible={true}
+                    width="200"
+                    color="#5f35f5"
+                    ariaLabel="infinity-spin-loading"
+                  />
+                </div>
               </div>
             ) : (
               <button
