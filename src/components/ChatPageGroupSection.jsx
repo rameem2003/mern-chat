@@ -3,23 +3,13 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import ChatAccept from "./ChatAccept";
 import ActiveGroup from "./ActiveGroup";
+import SearchSection from "./common/SearchSection";
 
 const ChatPageGroupSection = () => {
   return (
     <div>
       <div>
-        <div className="flex items-center justify-between px-[23px] py-[20px] rounded-[20px] shadow-custom">
-          <FaMagnifyingGlass size={20} />
-          <input
-            className="ps-[36px] w-full outline-none font-poppins placeholder:font-poppins placeholder:font-medium placeholder:text-[16px]"
-            type="text"
-            name=""
-            id=""
-            placeholder="Search"
-          />
-
-          <BsThreeDotsVertical size={20} className="text-secondary" />
-        </div>
+        <SearchSection />
 
         <div className="px-[23px] py-[13px] mt-[43px] shadow-custom rounded-[20px]">
           <div className="flex items-center justify-between">

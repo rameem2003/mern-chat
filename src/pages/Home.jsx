@@ -5,11 +5,12 @@ import UserList from "../components/UserList";
 import FriendRequestList from "../components/FriendRequestList";
 import GroupList from "../components/GroupList";
 import BlockList from "../components/BlockList";
+import Flex from "../components/common/Flex";
 
 const Home = () => {
   return (
     <section>
-      <div className="flex">
+      <Flex>
         <div className="w-4/12">
           <GroupRequestList />
         </div>
@@ -19,9 +20,9 @@ const Home = () => {
         <div className="w-4/12">
           <UserList />
         </div>
-      </div>
+      </Flex>
 
-      <div className="flex mt-[43px]">
+      <Flex className=" mt-[43px]">
         <div className="w-4/12">
           <FriendRequestList />
         </div>
@@ -31,7 +32,7 @@ const Home = () => {
         <div className="w-4/12">
           <BlockList />
         </div>
-      </div>
+      </Flex>
     </section>
   );
 };

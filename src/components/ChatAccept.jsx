@@ -1,8 +1,9 @@
 import React from "react";
+import Flex from "./common/Flex";
 
 const ChatAccept = () => {
   return (
-    <div className=" flex items-center justify-between py-[13px] border-b-[1px] border-gray-300">
+    <Flex className=" items-center justify-between py-[13px] border-b-[1px] border-gray-300">
       <div>
         <img
           className="w-[70px] h-[70px] rounded-full"
@@ -23,7 +24,7 @@ const ChatAccept = () => {
       <button className=" font-poppins font-semibold text-[20px] text-white bg-secondary rounded-[5px] px-[8px] me-[12px]">
         Accept
       </button>
-    </div>
+    </Flex>
   );
 };
 
