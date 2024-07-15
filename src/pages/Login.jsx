@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../config/firebase.config";
 import { Link, useNavigate } from "react-router-dom";
 import { InfinitySpin } from "react-loader-spinner";
@@ -8,9 +13,13 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { IoLogoFacebook } from "react-icons/io";
+import Flex from "./../components/common/Flex";
 
 const Login = () => {
   const navigate = useNavigate();
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
   const [email, setEmail] = useState("");
   const [emailerr, setEmailErr] = useState(false);
   const [password, setPassword] = useState("");
@@ -20,8 +29,151 @@ const Login = () => {
   const handleToggle = () => {
     setHide(!hide);
   };
+  useEffect(() => {
+    window.addEventListener("online", () => {
+      console.log("You are back online");
+      toast.success("You are back online", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    });
 
-  const handleGoogleAuth = () => {};
+    window.addEventListener("offline", () => {
+      console.log("You have gone offline");
+      toast.error("You have gone offline", {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    });
+  });
+
+  const handleFacebookAuth = () => {
+    setLoading(true);
+    signInWithPopup(auth, facebookProvider)
+      .then((result) => {
+        // The signed-in user info.
+        const user = result.user;
+
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        const credential = FacebookAuthProvider.credentialFromResult(result);
+        const accessToken = credential.accessToken;
+        toast.success("Login Successfull", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = FacebookAuthProvider.credentialFromError(error);
+
+        console.log(errorCode);
+
+        setLoading(false);
+        if (errorCode.includes("auth/operation-not-allowed")) {
+          toast.error("Something going wrong", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+
+        if (
+          errorCode.includes("auth/account-exists-with-different-credential")
+        ) {
+          toast.error("User Already Exist", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      });
+  };
+
+  const handleGoogleAuth = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        toast.success("Signup Successfull", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+
+        setTimeout(() => {
+          setLoading(false);
+          navigate("/");
+        }, 2000);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+
+        console.log(errorCode);
+
+        if (errorCode.includes("auth/operation-not-allowed")) {
+          toast.error("Something going wrong", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +181,6 @@ const Login = () => {
       setEmailErr(true);
       setLoading(false);
     }
-
     if (!password) {
       setPasserrorErr(true);
       setLoading(false);
@@ -68,9 +219,17 @@ const Login = () => {
           console.log(errorMessage);
 
           if (errorMessage.includes("auth/invalid-credential")) {
-            setEmailErr(true);
-            setPasserrorErr(true);
             setLoading(false);
+            toast.error("Invalid Credential", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
           }
         });
     }
@@ -95,13 +254,21 @@ const Login = () => {
             Login to your account!
           </h1>
 
-          <button
-            onClick={handleGoogleAuth}
-            className=" font-openSans font-semibold text-[13px] text-dark border-[0.83px] border-dark rounded-[8px] px-[42px] py-[21px] mt-[29px]"
-          >
-            {" "}
-            <FcGoogle size={25} className=" inline-block" /> Login with Google
-          </button>
+          <Flex className="gap-5">
+            <button
+              onClick={handleGoogleAuth}
+              className=" font-openSans font-semibold text-[13px] text-dark border-[0.83px] border-dark rounded-[8px] px-[42px] py-[21px] mt-[29px]"
+            >
+              <FcGoogle size={25} className=" inline-block" /> Login with Google
+            </button>
+            <button
+              onClick={handleFacebookAuth}
+              className=" font-openSans font-semibold text-[13px] text-dark border-[0.83px] border-dark rounded-[8px] px-[42px] py-[21px] mt-[29px]"
+            >
+              <IoLogoFacebook size={25} className=" inline-block" /> Login with
+              Facebook
+            </button>
+          </Flex>
 
           <form action="">
             <div className=" relative mt-[62px]">
