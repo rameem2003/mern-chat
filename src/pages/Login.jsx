@@ -26,26 +26,12 @@ const Login = () => {
   const [passerror, setPasserrorErr] = useState(false);
   const [hide, setHide] = useState(true);
   const [loading, setLoading] = useState(false);
-  const handleToggle = () => {
-    setHide(!hide);
-  };
-  useEffect(() => {
-    window.addEventListener("online", () => {
-      console.log("You are back online");
-      toast.success("You are back online", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    });
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-    window.addEventListener("offline", () => {
-      console.log("You have gone offline");
+  const handleCheckOnline = () => {
+    setIsOnline(navigator.onLine);
+
+    if (!isOnline) {
       toast.error("You have gone offline", {
         position: "bottom-left",
         autoClose: 5000,
@@ -56,8 +42,17 @@ const Login = () => {
         progress: undefined,
         theme: "colored",
       });
-    });
-  });
+    }
+  };
+
+  const handleToggle = () => {
+    setHide(!hide);
+  };
+  useEffect(() => {
+    window.addEventListener("online", handleCheckOnline);
+
+    window.addEventListener("offline", handleCheckOnline);
+  }, []);
 
   const handleFacebookAuth = () => {
     setLoading(true);
@@ -253,6 +248,16 @@ const Login = () => {
           <h1 className="font-nunito font-bold text-[35px] text-primary mb-3">
             Login to your account!
           </h1>
+
+          <div>
+            {isOnline ? (
+              ""
+            ) : (
+              <h2 className=" font-nunito font-medium text-lg text-red-500">
+                Opps Looks Like You Are In Offline
+              </h2>
+            )}
+          </div>
 
           <Flex className="gap-5">
             <button
