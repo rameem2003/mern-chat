@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { auth } from "../config/firebase.config";
 import { Link, useNavigate } from "react-router-dom";
 import { InfinitySpin } from "react-loader-spinner";
@@ -48,25 +51,25 @@ const Signup = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          // ...
+          sendEmailVerification(auth.currentUser).then(() => {
+            console.log(user);
 
-          console.log(user);
+            toast.success("Signup Successfull", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
 
-          toast.success("Signup Successfull", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
+            setTimeout(() => {
+              setLoading(false);
+              navigate("/login");
+            }, 2000);
           });
-
-          setTimeout(() => {
-            setLoading(false);
-            navigate("/login");
-          }, 2000);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -89,7 +92,7 @@ const Signup = () => {
     }
   };
   return (
-    <div className="flex">
+    <div className="flex px-3 h-auto md:h-screen">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -102,18 +105,18 @@ const Signup = () => {
         pauseOnHover
         theme="colored"
       />
-      <div className="w-1/2 flex items-center justify-end mr-[69px]">
+      <div className=" w-full lg:w-1/2 flex items-center justify-center lg:justify-end lg:mr-[69px]">
         <div>
-          <h1 className="font-nunito font-bold text-[35px] text-primary mb-3">
+          <h1 className="font-nunito font-bold text-[25px] xl:text-[35px] text-center lg:text-left text-primary mb-3">
             Get started with easily register
           </h1>
-          <p className="font-nunito font-normal text-[21px] text-primary">
+          <p className="font-nunito font-normal text-[21px] text-center lg:text-left text-primary">
             Free register and you can enjoy it
           </p>
 
           <form action="">
             {/* email entry start */}
-            <div className=" relative mt-[62px]">
+            <div className=" relative mt-5 2xl:mt-[62px]">
               <label
                 className="font-nunito font-semibold text-[13px] text-primary bg-white px-4 absolute top-[-8px] left-[40px]"
                 htmlFor=""
@@ -121,7 +124,7 @@ const Signup = () => {
                 Email Address
               </label>
               <input
-                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                className={`w-full lg:w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
                   emailerr ? "border-red-500" : "border-primary"
                 }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
@@ -155,7 +158,7 @@ const Signup = () => {
                 Full name
               </label>
               <input
-                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                className={`w-full lg:w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
                   nameerr ? "border-red-500" : "border-primary"
                 }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
@@ -187,7 +190,7 @@ const Signup = () => {
                 Password
               </label>
               <input
-                className={`w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
+                className={`w-full lg:w-[368px] h-[81px] rounded-lg  border-[1.72px] ${
                   passerror ? "border-red-500" : "border-primary"
                 }  font-nunito font-semibold text-[21px] text-primary px-[52px] py-[26px]`}
                 onChange={(e) => {
@@ -203,13 +206,13 @@ const Signup = () => {
                 <FaEye
                   onClick={handleToggle}
                   size={25}
-                  className="absolute top-[28px] right-[156px] cursor-pointer"
+                  className="absolute top-[28px] right-3 xl:right-[156px] cursor-pointer"
                 />
               ) : (
                 <FaEyeSlash
                   onClick={handleToggle}
                   size={25}
-                  className="absolute top-[28px] right-[156px] cursor-pointer"
+                  className="absolute top-[28px] right-3 xl:right-[156px] cursor-pointer"
                 />
               )}
 
@@ -251,13 +254,13 @@ const Signup = () => {
             ) : (
               <button
                 onClick={handleSubmit}
-                className=" font-nunito font-semibold text-[21px] text-white bg-secondary px-[147px] py-[20px] rounded-[86px] mt-[51px]"
+                className=" font-nunito font-semibold text-[21px] text-white bg-secondary w-full lg:w-auto px-[100px] py-[20px] rounded-[86px] mt-[51px]"
               >
                 Sign up
               </button>
             )}
 
-            <p className="font-openSans font-normal text-[13px] text-dark mt-[35px] text-center w-[368px]">
+            <p className="font-openSans font-normal text-[13px] text-dark mt-2 2xl:mt-[35px] text-center w-[368px]">
               Already have an account ?{" "}
               <Link
                 className=" font-bold
@@ -270,7 +273,7 @@ const Signup = () => {
           </form>
         </div>
       </div>
-      <div className="w-1/2">
+      <div className=" hidden lg:block lg:w-1/2">
         <img
           className="w-full h-screen object-cover"
           src="/signup.png"

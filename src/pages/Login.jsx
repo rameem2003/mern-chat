@@ -30,19 +30,6 @@ const Login = () => {
 
   const handleCheckOnline = () => {
     setIsOnline(navigator.onLine);
-
-    if (!isOnline) {
-      toast.error("You have gone offline", {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    }
   };
 
   const handleToggle = () => {
@@ -230,7 +217,7 @@ const Login = () => {
     }
   };
   return (
-    <div className="flex">
+    <div className="flex px-3 lg:p-0 h-screen">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -243,7 +230,7 @@ const Login = () => {
         pauseOnHover
         theme="colored"
       />
-      <div className="w-1/2 flex items-center justify-end mr-[215px]">
+      <div className=" w-full lg:w-1/2 flex items-center justify-center lg:justify-end lg:mr-[215px]">
         <div>
           <h1 className="font-nunito font-bold text-[35px] text-primary mb-3">
             Login to your account!
@@ -266,13 +253,13 @@ const Login = () => {
             >
               <FcGoogle size={25} className=" inline-block" /> Login with Google
             </button>
-            <button
+            {/* <button
               onClick={handleFacebookAuth}
               className=" font-openSans font-semibold text-[13px] text-dark border-[0.83px] border-dark rounded-[8px] px-[42px] py-[21px] mt-[29px]"
             >
               <IoLogoFacebook size={25} className=" inline-block" /> Login with
               Facebook
-            </button>
+            </button> */}
           </Flex>
 
           <form action="">
@@ -284,7 +271,7 @@ const Login = () => {
                 Email Address
               </label>
               <input
-                className="w-[368px] h-[81px] border-b-[0.83px] border-dark font-openSans font-semibold text-[21px] text-primary py-[16px] outline-none"
+                className=" w-full lg:w-[368px] h-[81px] border-b-[0.83px] border-dark font-openSans font-semibold text-[21px] text-primary py-[16px] outline-none"
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setEmailErr(false);
@@ -311,7 +298,7 @@ const Login = () => {
                 Password
               </label>
               <input
-                className="w-[368px] h-[81px] border-b-[0.83px] border-dark font-openSans font-semibold text-[21px] text-primary py-[16px] outline-none"
+                className=" w-full lg:w-[368px] h-[81px] border-b-[0.83px] border-dark font-openSans font-semibold text-[21px] text-primary py-[16px] outline-none"
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setPasserrorErr(false);
@@ -325,13 +312,13 @@ const Login = () => {
                 <FaEye
                   onClick={handleToggle}
                   size={25}
-                  className="absolute text-gray-500 top-[28px] right-[55px] cursor-pointer"
+                  className="absolute text-gray-500 top-[28px] right-3 lg:right-[55px] cursor-pointer"
                 />
               ) : (
                 <FaEyeSlash
                   onClick={handleToggle}
                   size={25}
-                  className="absolute text-gray-500 top-[28px] right-[55px] cursor-pointer"
+                  className="absolute text-gray-500 top-[28px] right-3 lg:right-[55px] cursor-pointer"
                 />
               )}
 
@@ -362,7 +349,7 @@ const Login = () => {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="font-nunito font-semibold text-[21px] text-white bg-secondary px-[122px] py-[20px] rounded-[8px] shadow-lg mt-[51px]"
+                className="font-nunito font-semibold text-base lg:text-[21px] text-white bg-secondary w-full lg:w-auto lg:px-[100px] py-[20px] rounded-[8px] shadow-lg mt-[51px]"
               >
                 Login to Continue
               </button>
@@ -381,7 +368,7 @@ const Login = () => {
           </form>
         </div>
       </div>
-      <div className="w-1/2">
+      <div className=" hidden lg:block lg:w-1/2">
         <img className="w-full h-screen object-cover" src="/login.png" alt="" />
       </div>
     </div>
