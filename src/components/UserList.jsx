@@ -14,9 +14,15 @@ const UserList = () => {
           <BsThreeDotsVertical size={20} className="text-secondary" />
         </div>
 
-        {userlist.map((u, i) => (
-          <AddUser key={i} user={u} />
-        ))}
+        <div className="h-[400px] overflow-y-scroll">
+          <AddUser />
+          <AddUser />
+          <AddUser />
+          <AddUser />
+          <AddUser />
+          <AddUser />
+          <AddUser />
+        </div>
       </div>
     </div>
   );

@@ -12,10 +12,12 @@ const GroupList = () => {
         <BsThreeDotsVertical size={20} className="text-secondary" />
       </div>
 
-      <Chat />
-      <Chat />
-      <Chat />
-      <Chat />
+      <div className=" h-[250px] overflow-y-scroll">
+        <Chat />
+        <Chat />
+        <Chat />
+        <Chat />
+      </div>
     </div>
   );
 };

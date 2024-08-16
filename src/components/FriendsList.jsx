@@ -13,11 +13,15 @@ const FriendsList = () => {
           <BsThreeDotsVertical size={20} className="text-secondary" />
         </div>
 
-        <Chat />
-        <Chat />
-        <Chat />
-        <Chat />
-        <Chat />
+        <div className="h-[400px] overflow-y-scroll">
+          <Chat />
+          <Chat />
+          <Chat />
+          <Chat />
+          <Chat />
+          <Chat />
+          <Chat />
+        </div>
       </div>
     </div>
   );

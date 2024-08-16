@@ -12,9 +12,13 @@ const FriendRequestList = () => {
         <BsThreeDotsVertical size={20} className="text-secondary" />
       </div>
 
-      <FriendAccept />
-      <FriendAccept />
-      <FriendAccept />
+      <div className=" h-[250px] overflow-y-scroll">
+        <FriendAccept />
+        <FriendAccept />
+        <FriendAccept />
+        <FriendAccept />
+        <FriendAccept />
+      </div>
     </div>
   );
 };

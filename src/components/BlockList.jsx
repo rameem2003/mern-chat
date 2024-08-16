@@ -12,9 +12,11 @@ const BlockList = () => {
         <BsThreeDotsVertical size={20} className="text-secondary" />
       </div>
 
-      <BlockUser />
-      <BlockUser />
-      <BlockUser />
+      <div className=" h-[250px] overflow-y-scroll">
+        <BlockUser />
+        <BlockUser />
+        <BlockUser />
+      </div>
     </div>
   );
 };

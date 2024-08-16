@@ -16,9 +16,12 @@ const GroupRequestList = () => {
           <BsThreeDotsVertical size={20} className="text-secondary" />
         </div>
 
-        <ChatAccept />
-        <ChatAccept />
-        <ChatAccept />
+        <div className="h-[300px] overflow-y-scroll">
+          <ChatAccept />
+          <ChatAccept />
+          <ChatAccept />
+          <ChatAccept />
+        </div>
       </div>
     </div>
   );
