@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   FacebookAuthProvider,
   GoogleAuthProvider,
@@ -15,11 +15,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoLogoFacebook } from "react-icons/io";
 import Flex from "./../components/common/Flex";
+import { AuthContext } from "../context/AuthContextProvider";
 
 const Login = () => {
+  // context
+  const { setUser } = useContext(AuthContext);
+  // navigate
   const navigate = useNavigate();
+  // firebase auth provider
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
+  // all states
   const [email, setEmail] = useState("");
   const [emailerr, setEmailErr] = useState(false);
   const [password, setPassword] = useState("");
@@ -114,6 +120,9 @@ const Login = () => {
         const token = credential.accessToken;
         // The signed-in user info.
         const user = result.user;
+
+        setUser(user);
+
         toast.success("Signup Successfull", {
           position: "top-center",
           autoClose: 5000,

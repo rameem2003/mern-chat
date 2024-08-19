@@ -4,9 +4,12 @@ import App from "./App.jsx";
 import "./index.css";
 
 import { app } from "./config/firebase.config.js";
+import AuthContextProvider from "./context/AuthContextProvider.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <AuthContextProvider>
+      <App />
+    </AuthContextProvider>
   </React.StrictMode>
 );

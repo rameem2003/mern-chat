@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   IoHomeOutline,
   IoChatbubbleEllipses,
@@ -6,14 +6,31 @@ import {
 } from "react-icons/io5";
 import { FaRegBell } from "react-icons/fa";
 import { GrLogout } from "react-icons/gr";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContextProvider";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase.config";
 
 const Navigation = () => {
+  // context
+  const { user, setUser } = useContext(AuthContext);
+
+  // navigation
+  const navigate = useNavigate();
+
+  // function for signout
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      setUser({});
+      navigate("/login");
+    });
+  };
+
   return (
     <nav className="bg-secondary h-full flex items-center flex-col rounded-[20px]">
       <img
         className="mt-[24px] h-[100px] w-[100px] rounded-full object-cover"
-        src="/profile.jpg"
+        src={user.photoURL}
         alt=""
       />
 
@@ -53,12 +70,12 @@ const Navigation = () => {
           </Link>
         </li>
         <li className="mt-[116px]">
-          <a
+          <button
+            onClick={handleSignOut}
             className="relative inline-block text-white text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] hover:text-secondary hover:bg-white hover:after:bg-secondary"
-            href="#"
           >
             <GrLogout />
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
