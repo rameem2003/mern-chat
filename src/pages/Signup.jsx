@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
-import { auth } from "../config/firebase.config";
+import { ref, set } from "firebase/database";
+import {
+  getStorage,
+  ref as fireBaseStorageRef,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { auth, db } from "../config/firebase.config";
 import { Link, useNavigate } from "react-router-dom";
 import { InfinitySpin } from "react-loader-spinner";
 import { MdError } from "react-icons/md";
@@ -19,9 +27,14 @@ const Signup = () => {
   const [nameerr, setNameErr] = useState(false);
   const [password, setPassword] = useState("");
   const [passerror, setPasserrorErr] = useState(false);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState("");
   const [hide, setHide] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const storage = getStorage();
+  const storageRef = fireBaseStorageRef(storage, `userAvater/${file.name}`);
+
+  const uploadTask = uploadBytesResumable(storageRef, file);
 
   const handleToggle = () => {
     setHide(!hide);
@@ -37,38 +50,90 @@ const Signup = () => {
       setNameErr(true);
       setLoading(false);
     }
-    // if (!file) {
-    // }
+    if (!file) {
+      toast.error("Upload Your Profile", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
     if (!password) {
       setPasserrorErr(true);
       setLoading(false);
     } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       setEmailErr(true);
       setLoading(false);
-    } else if (email && name && password) {
+    } else if (email && name && password && file) {
       setLoading(true);
-      createUserWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
           sendEmailVerification(auth.currentUser).then(() => {
             console.log(user);
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const progress =
+                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log("Upload is " + progress + "% done");
+                switch (snapshot.state) {
+                  case "paused":
+                    console.log("Upload is paused");
+                    break;
+                  case "running":
+                    console.log("Upload is running");
+                    break;
+                }
+              },
+              (error) => {
+                // Handle unsuccessful uploads
+                console.log(error);
+              },
+              () => {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                  console.log("File available at", downloadURL);
 
-            toast.success("Signup Successfull", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
+                  updateProfile(auth.currentUser, {
+                    displayName: name,
+                    photoURL: downloadURL,
+                  })
+                    .then(() => {
+                      set(ref(db, "users/" + user.uid), {
+                        displayName: name,
+                        email: email,
+                        photoURL: downloadURL,
+                      });
 
-            setTimeout(() => {
-              setLoading(false);
-              navigate("/login");
-            }, 2000);
+                      toast.success("Signup Successfull", {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      });
+
+                      setTimeout(() => {
+                        setLoading(false);
+                        navigate("/login");
+                      }, 2000);
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                });
+              }
+            );
           });
         })
         .catch((error) => {
@@ -86,8 +151,6 @@ const Signup = () => {
             setPasserrorErr(true);
             setLoading(false);
           }
-
-          // ..
         });
     }
   };

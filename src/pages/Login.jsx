@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
+import Flex from "./../components/common/Flex";
 import {
   FacebookAuthProvider,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { auth } from "../config/firebase.config";
+import { auth, db } from "../config/firebase.config";
+import { ref, set } from "firebase/database";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContextProvider";
 import { InfinitySpin } from "react-loader-spinner";
 import { MdError } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
+import { IoLogoFacebook } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoLogoFacebook } from "react-icons/io";
-import Flex from "./../components/common/Flex";
-import { AuthContext } from "../context/AuthContextProvider";
 
 const Login = () => {
   // context
@@ -121,7 +122,15 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user;
 
+        set(ref(db, "users/" + user.uid), {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        });
+
         setUser(user);
+
+        console.log(user);
 
         toast.success("Signup Successfull", {
           position: "top-center",
@@ -184,6 +193,8 @@ const Login = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
+
+          setUser(user);
 
           // ...
 
