@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   IoHomeOutline,
   IoChatbubbleEllipses,
@@ -9,17 +9,21 @@ import { GrLogout } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase.config";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthReducer } from "../../redux/featurea/AuthSlice";
 
 const Navigation = () => {
+  // dispatch instance
+  const dispatch = useDispatch();
   // user data
   const data = useSelector((state) => state.user.user);
+
   // navigation
   const navigate = useNavigate();
   // function for signout
   const handleSignOut = () => {
     signOut(auth).then(() => {
-      setUser({});
+      dispatch(AuthReducer(null));
       navigate("/login");
     });
   };

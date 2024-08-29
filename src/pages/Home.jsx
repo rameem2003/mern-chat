@@ -23,10 +23,6 @@ const Home = () => {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      const uid = user.uid;
-
-      console.log(user);
-
       dispatch(AuthReducer(user));
     } else {
       setVerify(false);
@@ -47,9 +43,9 @@ const Home = () => {
     <>
       {verify && (
         <div className=" fixed top-0 left-0 w-full h-screen bg-secondary/90 backdrop-blur-sm flex items-center justify-center">
-          <h1 className=" font-nunito font-bold text-4xl text-white">
-            Please verify your email
-          </h1>
+          <p className=" font-nunito font-bold text-4xl text-white">
+            To prevent the potential spam. Please verify your email
+          </p>
         </div>
       )}
 

@@ -131,6 +131,8 @@ const Login = () => {
 
         console.log(user);
 
+        dispatch(AuthReducer(user));
+
         toast.success("Signup Successfull", {
           position: "top-center",
           autoClose: 5000,
