@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Flex from "./../components/common/Flex";
 import {
   FacebookAuthProvider,
@@ -9,7 +9,6 @@ import {
 import { auth, db } from "../config/firebase.config";
 import { ref, set } from "firebase/database";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContextProvider";
 import { InfinitySpin } from "react-loader-spinner";
 import { MdError } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
@@ -17,10 +16,12 @@ import { FcGoogle } from "react-icons/fc";
 import { IoLogoFacebook } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { AuthReducer } from "../redux/featurea/AuthSlice";
 
 const Login = () => {
-  // context
-  const { setUser } = useContext(AuthContext);
+  // dispatch instance
+  const dispatch = useDispatch();
   // navigate
   const navigate = useNavigate();
   // firebase auth provider
@@ -128,8 +129,6 @@ const Login = () => {
           photoURL: user.photoURL,
         });
 
-        setUser(user);
-
         console.log(user);
 
         toast.success("Signup Successfull", {
@@ -194,7 +193,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
 
-          setUser(user);
+          dispatch(AuthReducer(user));
 
           // ...
 

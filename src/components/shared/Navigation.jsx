@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import {
   IoHomeOutline,
   IoChatbubbleEllipses,
@@ -7,17 +7,15 @@ import {
 import { FaRegBell } from "react-icons/fa";
 import { GrLogout } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase.config";
+import { useSelector } from "react-redux";
 
 const Navigation = () => {
-  // context
-  const { user, setUser } = useContext(AuthContext);
-
+  // user data
+  const data = useSelector((state) => state.user.user);
   // navigation
   const navigate = useNavigate();
-
   // function for signout
   const handleSignOut = () => {
     signOut(auth).then(() => {
@@ -30,7 +28,7 @@ const Navigation = () => {
     <nav className="bg-secondary h-full flex items-center flex-col rounded-[20px]">
       <img
         className="mt-[24px] h-[100px] w-[100px] rounded-full object-cover"
-        src={user.photoURL}
+        src={data?.photoURL}
         alt=""
       />
 
