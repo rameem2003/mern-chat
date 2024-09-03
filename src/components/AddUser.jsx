@@ -7,17 +7,17 @@ const AddUser = ({ user }) => {
       <div>
         <img
           className="w-[52px] h-[52px] rounded-full object-cover"
-          src={"/chatlogo.jpg"}
+          src={user.photoURL}
           alt={"wem"}
         />
       </div>
 
       <div className="w-[75%] ms-[14px]">
         <h2 className=" font-poppins font-semibold text-[18px] text-black">
-          {"Rameem"}
+          {user.displayName}
         </h2>
         <p className=" font-poppins font-medium text-[14px] text-textSecondary">
-          {"email"}
+          {user.create}
         </p>
       </div>
 

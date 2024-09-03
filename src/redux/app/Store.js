@@ -5,4 +5,8 @@ export default configureStore({
   reducer: {
     user: AuthSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });

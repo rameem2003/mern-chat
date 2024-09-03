@@ -1,9 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AddUser from "./AddUser";
+import { onValue, ref } from "firebase/database";
+import { db } from "../config/firebase.config";
+import { useSelector } from "react-redux";
 
 const UserList = () => {
-  const userlist = [1, 1, 1, 1];
+  // user data
+  const data = useSelector((state) => state.user.user);
+
+  // const userlist = [1, 1, 1, 1];
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const starCountRef = ref(db, "users/");
+    onValue(starCountRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((user) => {
+        if (data.uid != user.key) {
+          arr.push(user.val());
+        }
+      });
+      setUsers(arr);
+    });
+  }, []);
+
   return (
     <div>
       <div className="px-[23px] py-[13px] ms-[22px] shadow-custom rounded-[20px]">
@@ -15,13 +36,9 @@ const UserList = () => {
         </div>
 
         <div className="h-[400px] overflow-y-scroll">
-          <AddUser />
-          <AddUser />
-          <AddUser />
-          <AddUser />
-          <AddUser />
-          <AddUser />
-          <AddUser />
+          {users.map((user, i) => (
+            <AddUser key={i} user={user} />
+          ))}
         </div>
       </div>
     </div>
