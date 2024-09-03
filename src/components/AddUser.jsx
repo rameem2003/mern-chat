@@ -1,5 +1,6 @@
 import React from "react";
 import Flex from "./common/Flex";
+import moment from "moment";
 
 const AddUser = ({ user }) => {
   return (
@@ -17,7 +18,7 @@ const AddUser = ({ user }) => {
           {user.displayName}
         </h2>
         <p className=" font-poppins font-medium text-[14px] text-textSecondary">
-          {user.create}
+          {moment(new Date(user.create), "YYYYMMDD").fromNow()}
         </p>
       </div>
 
