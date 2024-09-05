@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import {
   IoHomeOutline,
   IoChatbubbleEllipses,
@@ -9,13 +9,28 @@ import { GrLogout } from "react-icons/gr";
 import { ImUpload } from "react-icons/im";
 import { IoMdCloudUpload } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase.config";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadString,
+} from "firebase/storage";
+import { ref as databaseref, update } from "firebase/database";
+import { signOut, updateProfile } from "firebase/auth";
+import { auth, db } from "../../config/firebase.config";
 import { useDispatch, useSelector } from "react-redux";
 import { AuthReducer } from "../../redux/featurea/AuthSlice";
+import LoadingAnimation from "../common/LoadingAnimation";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 
 const Navigation = () => {
+  // states for react corpper
+  const [image, setImage] = useState(null);
+  const [cropData, setCropData] = useState("#");
+  const cropperRef = createRef();
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   // dispatch instance
   const dispatch = useDispatch();
   // user data
@@ -31,12 +46,66 @@ const Navigation = () => {
     });
   };
 
+  // image upload
+  const handleImagefile = (e) => {
+    e.preventDefault();
+    let files;
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files;
+    } else if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(files[0]);
+  };
+
+  // handle image submit
+  const handleSubmit = () => {
+    setLoading(true);
+    const storage = getStorage();
+    const storageRef = ref(storage, `userAvater/${Date.now()}`);
+    if (typeof cropperRef.current?.cropper !== "undefined") {
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+
+      const message4 = cropperRef.current?.cropper
+        .getCroppedCanvas()
+        .toDataURL();
+      uploadString(storageRef, message4, "data_url").then((snapshot) => {
+        getDownloadURL(storageRef).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          updateProfile(auth.currentUser, {
+            photoURL: downloadURL,
+          })
+            .then(() => {
+              dispatch(AuthReducer(auth.currentUser));
+              console.log(auth.currentUser);
+            })
+            .then(() => {
+              update(databaseref(db, "users/" + data.uid), {
+                photoURL: downloadURL,
+              });
+            })
+            .then(() => {
+              setCropData("");
+              setImage("");
+              setModal(false);
+              setLoading(false);
+            });
+        });
+      });
+    }
+  };
+
   return (
     <>
+      {loading && <LoadingAnimation />}
       <div
         className={` duration-500 ease-in-out opacity-0 fixed top-[50%] left-[50%] translate-x-[-50%] ${
           modal ? "translate-y-[-50%] opacity-100" : "translate-y-[-350%] "
-        }  z-50 w-[500px] h-[350px] shadow-2xl rounded-lg p-3 bg-white`}
+        }  z-50 w-[500px] h-auto shadow-2xl rounded-lg p-3 bg-white`}
       >
         <FaTimes
           onClick={() => setModal(false)}
@@ -44,12 +113,12 @@ const Navigation = () => {
         />
 
         <label
-          for="uploadFile1"
-          class="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-52 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]"
+          htmlFor="uploadFile1"
+          className="bg-white text-gray-500 font-semibold text-base rounded max-w-md h-52 flex flex-col items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed mx-auto font-[sans-serif]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-11 mb-2 fill-gray-500"
+            className="w-11 mb-2 fill-gray-500"
             viewBox="0 0 32 32"
           >
             <path
@@ -62,14 +131,43 @@ const Navigation = () => {
             />
           </svg>
           Upload file
-          <input type="file" id="uploadFile1" class="hidden" />
-          <p class="text-xs font-medium text-gray-400 mt-2">
+          <input
+            onChange={handleImagefile}
+            type="file"
+            id="uploadFile1"
+            className="hidden"
+          />
+          <p className="text-xs font-medium text-gray-400 mt-2">
             PNG, JPG SVG, WEBP, and GIF are Allowed.
           </p>
         </label>
 
+        {image && (
+          <div className="mt-5">
+            <Cropper
+              ref={cropperRef}
+              style={{ height: 400, width: "100%" }}
+              zoomTo={0.5}
+              initialAspectRatio={1}
+              preview=".img-preview"
+              src={image}
+              viewMode={1}
+              minCropBoxHeight={10}
+              minCropBoxWidth={10}
+              background={false}
+              responsive={true}
+              autoCropArea={1}
+              checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+              guides={true}
+            />
+          </div>
+        )}
+
         <div className=" my-5 text-center">
-          <button className=" mx-auto flex items-center justify-center gap-1 py-1 px-3 bg-secondary font-bold text-xl text-white rounded-full ">
+          <button
+            onClick={handleSubmit}
+            className=" mx-auto flex items-center justify-center gap-1 py-1 px-3 bg-secondary font-bold text-xl text-white rounded-full "
+          >
             <IoMdCloudUpload />
             Upload
           </button>
