@@ -9,7 +9,7 @@ const UserList = () => {
   // user data
   const data = useSelector((state) => state.user.user);
 
-  // const userlist = [1, 1, 1, 1];
+  // all users data
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const UserList = () => {
       let arr = [];
       snapshot.forEach((user) => {
         if (data.uid != user.key) {
-          arr.push(user.val());
+          arr.push({ ...user.val(), uid: user.key });
         }
       });
       setUsers(arr);
