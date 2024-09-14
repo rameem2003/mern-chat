@@ -188,7 +188,11 @@ const Navigation = () => {
           />
         </div>
 
-        <ul className="mt-[78px] ps-[18px]">
+        <p className=" mt-5 text-center font-semibold text-xl text-white">
+          {data?.displayName}
+        </p>
+
+        <ul className="mt-[50px] ps-[18px]">
           <li>
             <Link
               to="/"

@@ -16,7 +16,7 @@ const GroupRequestList = () => {
           <BsThreeDotsVertical size={20} className="text-secondary" />
         </div>
 
-        <div className="h-[300px] overflow-y-scroll">
+        <div className="h-[300px] overflow-y-scroll no-scrollbar">
           <ChatAccept />
           <ChatAccept />
           <ChatAccept />

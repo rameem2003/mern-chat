@@ -35,7 +35,7 @@ const UserList = () => {
           <BsThreeDotsVertical size={20} className="text-secondary" />
         </div>
 
-        <div className="h-[400px] overflow-y-scroll">
+        <div className="h-[400px] overflow-y-scroll no-scrollbar">
           {users.map((user, i) => (
             <AddUser key={i} user={user} />
           ))}
