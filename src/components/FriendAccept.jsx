@@ -11,7 +11,16 @@ const FriendAccept = ({ data }) => {
 
   const handleAccept = (data) => {
     set(push(ref(db, "frinedList/")), {
-      ...data,
+      senderUid: data.senderUid,
+      senderName: data.senderName,
+      senderEmail: data.senderEmail,
+      senderPhotoURL: data.senderPhotoURL,
+      receiverUid: data.receiverUid,
+      receiverName: data.receiverName,
+      receiverEmail: data.receiverEmail,
+      receiverPhotoURL: data.receiverPhotoURL,
+      date: data.date,
+      notblock: true,
     }).then(() => {
       remove(ref(db, "friendRequest/" + data.key));
     });

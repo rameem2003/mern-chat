@@ -24,9 +24,11 @@ const FriendsList = () => {
           arr.push({ ...user.val(), key: user.key });
         }
       });
-      setFrindList(arr);
+      setFrindList(arr.filter((data) => data.notblock == true));
     });
   }, []);
+
+  console.log(friendList);
 
   return (
     <div>
