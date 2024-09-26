@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import Chat from "./Chat";
+import MyGroup from "./MyGroup";
+import { useSelector } from "react-redux";
+import { onValue, ref } from "firebase/database";
+import { db } from "../config/firebase.config";
 
 const GroupList = () => {
+  // user data
+  const data = useSelector((state) => state.user.user);
+
+  // all users data
+  const [myGroups, setMyGroups] = useState([]);
+
+  useEffect(() => {
+    const starCountRef = ref(db, "groupList/");
+    onValue(starCountRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((user) => {
+        if (data.uid == user.val().adminID) {
+          arr.push({ ...user.val(), key: user.key });
+        }
+      });
+      setMyGroups(arr.sort((a, b) => b.date - a.date));
+    });
+  }, []);
+
   return (
     <div className="px-[23px] ms-[22px] shadow-custom rounded-[20px]">
       <div className="flex items-center justify-between">
@@ -13,10 +35,9 @@ const GroupList = () => {
       </div>
 
       <div className=" h-[250px] overflow-y-scroll no-scrollbar">
-        <Chat />
-        <Chat />
-        <Chat />
-        <Chat />
+        {myGroups.map((data, i) => (
+          <MyGroup key={i} data={data} />
+        ))}
       </div>
     </div>
   );

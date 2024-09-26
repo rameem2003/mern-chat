@@ -1,7 +1,6 @@
 import React from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import ChatAccept from "./ChatAccept";
 import ActiveGroup from "./ActiveGroup";
 import SearchSection from "./common/SearchSection";
 

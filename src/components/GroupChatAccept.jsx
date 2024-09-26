@@ -1,23 +1,25 @@
 import React from "react";
 import Flex from "./common/Flex";
+import moment from "moment";
 
-const ChatAccept = () => {
+const GroupChatAccept = ({ data }) => {
   return (
     <Flex className=" items-center justify-between py-[13px] border-b-[1px] border-gray-300">
       <div>
-        <img
-          className="w-[70px] h-[70px] rounded-full"
-          src="/fdrlogo.jpg"
-          alt=""
-        />
+        <div className="w-[52px] h-[52px] rounded-full bg-secondary flex items-center justify-center">
+          <p className=" font-bold text-xl text-white">
+            {data.groupName.slice(0, 1)}
+          </p>
+        </div>
       </div>
 
       <div className="w-[80%] ms-[14px]">
         <h2 className=" font-poppins font-semibold text-[18px] text-black">
-          FDR 2309
+          {data.groupName}
         </h2>
         <p className=" font-poppins font-medium text-[14px] text-textSecondary">
-          Hi Guys, Wassup!
+          {data.adminName} ( {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+          )
         </p>
       </div>
 
@@ -28,4 +30,4 @@ const ChatAccept = () => {
   );
 };
 
-export default ChatAccept;
+export default GroupChatAccept;

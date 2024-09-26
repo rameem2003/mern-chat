@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import ChatAccept from "./ChatAccept";
+import React, { useEffect, useState } from "react";
 import SearchSection from "./common/SearchSection";
+import GroupChatAccept from "./GroupChatAccept";
 import { BiPlus } from "react-icons/bi";
 import { FaTimes } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { push, ref, set } from "firebase/database";
+import { onValue, push, ref, set } from "firebase/database";
 import { db } from "../config/firebase.config";
 
 const GroupRequestList = () => {
@@ -12,6 +12,20 @@ const GroupRequestList = () => {
   const data = useSelector((state) => state.user.user);
   const [newGroupModal, setNewGroupModal] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const [allGroups, setAllGroups] = useState([]);
+
+  useEffect(() => {
+    const starCountRef = ref(db, "groupList/");
+    onValue(starCountRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((user) => {
+        if (data.uid != user.val().adminID) {
+          arr.push({ ...user.val(), key: user.key });
+        }
+      });
+      setAllGroups(arr);
+    });
+  }, []);
 
   const handleSubmit = () => {
     set(push(ref(db, "groupList/")), {
@@ -21,8 +35,6 @@ const GroupRequestList = () => {
       adminPhotoURL: data.photoURL,
       date: Date.now(),
     }).then(() => setNewGroupModal(false));
-
-    // console.log(groupName);
   };
   return (
     <div>
@@ -83,10 +95,9 @@ const GroupRequestList = () => {
         </div>
 
         <div className="h-[300px] overflow-y-scroll no-scrollbar">
-          <ChatAccept />
-          <ChatAccept />
-          <ChatAccept />
-          <ChatAccept />
+          {allGroups.map((data, i) => (
+            <GroupChatAccept data={data} key={i} />
+          ))}
         </div>
       </div>
     </div>
