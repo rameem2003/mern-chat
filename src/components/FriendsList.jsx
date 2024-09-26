@@ -28,8 +28,6 @@ const FriendsList = () => {
     });
   }, []);
 
-  console.log(friendList);
-
   return (
     <div>
       <div className="px-[23px] py-[13px] ms-[22px] shadow-custom rounded-[20px]">
