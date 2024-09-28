@@ -8,7 +8,7 @@ import { FaRegBell, FaTimes } from "react-icons/fa";
 import { GrLogout } from "react-icons/gr";
 import { ImUpload } from "react-icons/im";
 import { IoMdCloudUpload } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -194,21 +194,33 @@ const Navigation = () => {
 
         <ul className="mt-[50px] ps-[18px]">
           <li>
-            <Link
+            <NavLink
               to="/"
-              className="relative inline-block text-white text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] hover:text-secondary hover:bg-white hover:after:bg-secondary"
+              className={({ isActive }) =>
+                `relative inline-block  text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] ${
+                  isActive
+                    ? " text-secondary bg-white after:bg-secondary"
+                    : "  text-white bg-secondary"
+                }  `
+              }
             >
               <IoHomeOutline />
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to="/chat"
-              className="relative inline-block text-white text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] hover:text-secondary hover:bg-white hover:after:bg-secondary"
+              className={({ isActive }) =>
+                `relative inline-block  text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] ${
+                  isActive
+                    ? " text-secondary bg-white after:bg-secondary"
+                    : "  text-white bg-secondary"
+                }  `
+              }
               href="#"
             >
               <IoChatbubbleEllipses />
-            </Link>
+            </NavLink>
           </li>
           <li>
             <a
@@ -219,13 +231,19 @@ const Navigation = () => {
             </a>
           </li>
           <li>
-            <Link
+            <NavLink
               to="/setting"
-              className="relative inline-block text-white text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] hover:text-secondary hover:bg-white hover:after:bg-secondary"
+              className={({ isActive }) =>
+                `relative inline-block  text-[46px] ps-[40px] pe-[50px] py-[20px] rounded-s-[20px] after:absolute after:h-full after:w-[8px] after:top-0 after:right-0 after:rounded-s-[20px] ${
+                  isActive
+                    ? " text-secondary bg-white after:bg-secondary"
+                    : "  text-white bg-secondary"
+                }  `
+              }
               href="#"
             >
               <IoSettingsOutline />
-            </Link>
+            </NavLink>
           </li>
           <li className="mt-[116px]">
             <button
