@@ -1,108 +1,85 @@
-import React from "react";
+import { onValue, ref } from "firebase/database";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { db } from "../config/firebase.config";
+import moment from "moment";
 
 const Masseges = () => {
+  const me = useSelector((state) => state.user.user);
+  const chatData = useSelector((state) => state.chat.chat);
+  const [masseges, setMasseges] = useState([]);
+
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    const starCountRef = ref(db, "chat/");
+    onValue(starCountRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((user) => {
+        if (
+          (me.uid == user.val().senderid &&
+            chatData.uid == user.val().receiverid) ||
+          (me.uid == user.val().receiverid &&
+            chatData.uid == user.val().senderid)
+        ) {
+          arr.push({ ...user.val(), uid: user.key });
+        }
+      });
+      setMasseges(arr);
+    });
+  }, [chatData && chatData.uid]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [masseges]);
+
   return (
     <div className="pt-[30px] h-[80%] border-b-[1px] border-gray-300 overflow-y-scroll no-scrollbar">
-      <div className="flex  items-start flex-col mt-[29px] relative ml-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
-            Hi Sir
-          </p>
-          <p className="font-poppins font-medium text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
+      {masseges.map((data, i) =>
+        me.uid == data.senderid ? (
+          <div
+            ref={scrollRef}
+            className="flex items-start flex-row-reverse mt-[29px] relative mr-2"
+            key={i}
+          >
+            <div>
+              <p className=" max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
+                {data.text}
+              </p>
+              <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
+                {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+              </p>
+            </div>
 
-        <img
-          className=" absolute bottom-[19px] left-[-5px] z-50"
-          src="./cornarwhite.png"
-          alt="cornarwhite"
-        />
-      </div>
+            <img
+              className=" absolute bottom-[18px] right-[-5px] z-50"
+              src="./cornerpurple.png"
+              alt="cornerpurple"
+            />
+          </div>
+        ) : (
+          <div
+            ref={scrollRef}
+            className="flex  items-start flex-col mt-[29px] relative ml-2"
+            key={i}
+          >
+            <div>
+              <p className="max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
+                {data.text}
+              </p>
+              <p className="font-poppins font-medium text-[12px] text-textDeem">
+                {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+              </p>
+            </div>
 
-      <div className="flex  items-start flex-col mt-[29px] relative ml-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
-            How are you doing?
-          </p>
-          <p className="font-poppins font-medium text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
-        <img
-          className=" absolute bottom-[19px] left-[-5px] z-50"
-          src="./cornarwhite.png"
-          alt="cornarwhite"
-        />
-      </div>
-
-      <div className="flex items-start flex-row-reverse mt-[29px] relative mr-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
-            Hello
-          </p>
-          <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
-
-        <img
-          className=" absolute bottom-[18px] right-[-5px] z-50"
-          src="./cornerpurple.png"
-          alt="cornerpurple"
-        />
-      </div>
-
-      <div className="flex items-start flex-row-reverse mt-[29px] relative mr-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
-            I am good and how about you?
-          </p>
-          <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
-
-        <img
-          className=" absolute bottom-[18px] right-[-5px] z-50"
-          src="./cornerpurple.png"
-          alt="cornerpurple"
-        />
-      </div>
-
-      <div className="flex  items-start flex-col mt-[29px]  relative ml-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
-            I am doing well. Can we meet up tomorrow?
-          </p>
-          <p className="font-poppins font-medium text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
-
-        <img
-          className=" absolute bottom-[19px] left-[-5px] z-50"
-          src="./cornarwhite.png"
-          alt="cornarwhite"
-        />
-      </div>
-
-      <div className="flex items-start flex-row-reverse mt-[29px] relative mr-2">
-        <div>
-          <p className="pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
-            Sure.
-          </p>
-          <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
-            Today, 2:01pm
-          </p>
-        </div>
-
-        <img
-          className=" absolute bottom-[18px] right-[-5px] z-50"
-          src="./cornerpurple.png"
-          alt="cornerpurple"
-        />
-      </div>
+            <img
+              className=" absolute bottom-[19px] left-[-5px] z-50"
+              src="./cornarwhite.png"
+              alt="cornarwhite"
+            />
+          </div>
+        )
+      )}
     </div>
   );
 };

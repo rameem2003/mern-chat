@@ -9,8 +9,6 @@ import { BsArrowRight } from "react-icons/bs";
 import { ChatReducer } from "../redux/featurea/ChatSlice";
 
 const Chat = ({ data }) => {
-  console.log(data);
-
   // user data
   const dispatch = useDispatch();
   const me = useSelector((state) => state.user.user);
