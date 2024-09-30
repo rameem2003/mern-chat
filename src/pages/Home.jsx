@@ -49,8 +49,8 @@ const Home = () => {
         </div>
       )}
 
-      <section>
-        <Flex>
+      <section className="">
+        <Flex className="gap-5 h-[50%]">
           <div className="w-4/12">
             <GroupRequestList />
           </div>
@@ -62,7 +62,7 @@ const Home = () => {
           </div>
         </Flex>
 
-        <Flex className=" mt-[43px]">
+        <Flex className=" mt-[43px] gap-5 h-[50%]">
           <div className="w-4/12">
             <FriendRequestList />
           </div>

@@ -1,14 +1,20 @@
 import React from "react";
 import Flex from "./common/Flex";
-import { useSelector } from "react-redux";
-import { MdDoNotDisturbOn } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 import { push, ref, remove, set, update } from "firebase/database";
 import { db } from "../config/firebase.config";
 import { IoPersonRemoveOutline } from "react-icons/io5";
+import { useLocation } from "react-router-dom";
+import { BsArrowRight } from "react-icons/bs";
+import { ChatReducer } from "../redux/featurea/ChatSlice";
 
 const Chat = ({ data }) => {
+  console.log(data);
+
   // user data
+  const dispatch = useDispatch();
   const me = useSelector((state) => state.user.user);
+  const location = useLocation();
 
   const handleblocked = async (info) => {
     update(ref(db, "frinedList/" + info.key), {
@@ -41,6 +47,26 @@ const Chat = ({ data }) => {
       });
     }
   };
+
+  const handleChat = () => {
+    if (me.uid == data.senderUid) {
+      dispatch(
+        ChatReducer({
+          name: data.receiverName,
+          uid: data.receiverUid,
+          photoURL: data.receiverPhotoURL,
+        })
+      );
+    } else {
+      dispatch(
+        ChatReducer({
+          name: data.senderName,
+          uid: data.senderUid,
+          photoURL: data.senderPhotoURL,
+        })
+      );
+    }
+  };
   return (
     <Flex className=" items-start justify-between py-[13px] gap-1 border-b-[1px] border-gray-300">
       <div>
@@ -65,16 +91,21 @@ const Chat = ({ data }) => {
       </div>
 
       <div>
-        {/* <span className=" font-poppins font-medium text-[10px] text-textSecondary">
-          Today, 8:56pm
-        </span> */}
-
-        <button
-          onClick={() => handleblocked(data)}
-          className=" font-poppins font-semibold text-[20px] p-2 text-white bg-red-500 rounded-[5px] px-[8px] "
-        >
-          <IoPersonRemoveOutline />
-        </button>
+        {location.pathname == "/chat" ? (
+          <button
+            onClick={handleChat}
+            className=" font-poppins font-semibold text-[20px] p-2 text-white bg-primary rounded-[5px] px-[8px] "
+          >
+            <BsArrowRight />
+          </button>
+        ) : (
+          <button
+            onClick={() => handleblocked(data)}
+            className=" font-poppins font-semibold text-[20px] p-2 text-white bg-red-500 rounded-[5px] px-[8px] "
+          >
+            <IoPersonRemoveOutline />
+          </button>
+        )}
       </div>
     </Flex>
   );
