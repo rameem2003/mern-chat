@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Flex from "./common/Flex";
 import { useDispatch, useSelector } from "react-redux";
-import { push, ref, remove, set, update } from "firebase/database";
+import { onValue, push, ref, remove, set, update } from "firebase/database";
 import { db } from "../config/firebase.config";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
@@ -12,7 +12,10 @@ const Chat = ({ data }) => {
   // user data
   const dispatch = useDispatch();
   const me = useSelector((state) => state.user.user);
+  const chatData = useSelector((state) => state.chat.chat);
   const location = useLocation();
+
+  const [masseges, setMasseges] = useState([]);
 
   const handleblocked = async (info) => {
     update(ref(db, "frinedList/" + info.key), {
@@ -65,6 +68,23 @@ const Chat = ({ data }) => {
       );
     }
   };
+
+  useEffect(() => {
+    const starCountRef = ref(db, "chat/");
+    onValue(starCountRef, (snapshot) => {
+      let arr = [];
+      snapshot.forEach((user) => {
+        if (
+          chatData.uid == user.val().senderid ||
+          chatData.uid == user.val().receiverid
+        ) {
+          arr.push({ ...user.val(), uid: user.key });
+        }
+      });
+      setMasseges(arr);
+    });
+  }, [chatData && chatData.uid]);
+
   return (
     <Flex className=" items-start justify-between py-[13px] gap-1 border-b-[1px] border-gray-300">
       <div>

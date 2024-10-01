@@ -23,6 +23,7 @@ import { AuthReducer } from "../../redux/featurea/AuthSlice";
 import LoadingAnimation from "../common/LoadingAnimation";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { ChatReducer } from "../../redux/featurea/ChatSlice";
 
 const Navigation = () => {
   // states for react corpper
@@ -42,6 +43,7 @@ const Navigation = () => {
   const handleSignOut = () => {
     signOut(auth).then(() => {
       dispatch(AuthReducer(null));
+      dispatch(ChatReducer(null));
       navigate("/login");
     });
   };

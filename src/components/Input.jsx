@@ -12,7 +12,6 @@ const Input = () => {
   const chatData = useSelector((state) => state.chat.chat);
   const [text, setText] = useState("");
   const [picker, setPicker] = useState(false);
-  const [emoji, setemoji] = useState("");
 
   const handleSend = () => {
     set(push(ref(db, "chat/")), {
@@ -24,7 +23,10 @@ const Input = () => {
       receiverPhoto: chatData.photoURL,
       date: Date.now(),
       text,
-    }).then(() => setText(""));
+    }).then(() => {
+      setText("");
+      setPicker(false);
+    });
   };
 
   const handleEmoji = (e) => {
@@ -36,7 +38,7 @@ const Input = () => {
         <input
           onChange={(e) => setText(e.target.value)}
           value={text}
-          className="w-full h-[45px] rounded-[10px] bg-customGrey px-5"
+          className="w-full h-[45px] rounded-[10px] bg-customGrey pl-5 pr-20"
           type="text"
           placeholder="Write your massage......"
           name=""

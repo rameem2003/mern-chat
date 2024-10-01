@@ -35,6 +35,11 @@ const Masseges = () => {
 
   return (
     <div className="pt-[30px] h-[80%] border-b-[1px] border-gray-300 overflow-y-scroll no-scrollbar">
+      {masseges.length == 0 && (
+        <p className=" font-semibold text-2xl text-secondary/60">
+          Let's express feelings............
+        </p>
+      )}
       {masseges.map((data, i) =>
         me.uid == data.senderid ? (
           <div
@@ -43,7 +48,7 @@ const Masseges = () => {
             key={i}
           >
             <div>
-              <p className=" max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
+              <p className=" break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
                 {data.text}
               </p>
               <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
@@ -64,7 +69,7 @@ const Masseges = () => {
             key={i}
           >
             <div>
-              <p className="max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
+              <p className="break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
                 {data.text}
               </p>
               <p className="font-poppins font-medium text-[12px] text-textDeem">
