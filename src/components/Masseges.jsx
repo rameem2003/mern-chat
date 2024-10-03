@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { db } from "../config/firebase.config";
 import moment from "moment";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 const Masseges = () => {
   const me = useSelector((state) => state.user.user);
@@ -47,20 +49,43 @@ const Masseges = () => {
             className="flex items-start flex-row-reverse mt-[29px] relative mr-2"
             key={i}
           >
-            <div>
-              <p className=" break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
-                {data.text}
-              </p>
-              <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
-                {moment(new Date(data.date), "YYYYMMDD").fromNow()}
-              </p>
-            </div>
+            {data.text && (
+              <div>
+                <div>
+                  <p className=" break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-secondary text-white rounded-[10px] font-poppins font-medium text-[16px]">
+                    {data.text}
+                  </p>
+                  <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+                <img
+                  className=" absolute bottom-[18px] right-[-5px] z-50"
+                  src="./cornerpurple.png"
+                  alt="cornerpurple"
+                />
+              </div>
+            )}
 
-            <img
-              className=" absolute bottom-[18px] right-[-5px] z-50"
-              src="./cornerpurple.png"
-              alt="cornerpurple"
-            />
+            {data.image && (
+              <div>
+                <div>
+                  <PhotoProvider>
+                    <PhotoView src={data.image}>
+                      <img
+                        src={data.image}
+                        alt="chat img"
+                        className=" w-[60%] ml-auto rounded-lg cursor-pointer"
+                      />
+                    </PhotoView>
+                  </PhotoProvider>
+
+                  <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -68,20 +93,44 @@ const Masseges = () => {
             className="flex  items-start flex-col mt-[29px] relative ml-2"
             key={i}
           >
-            <div>
-              <p className="break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
-                {data.text}
-              </p>
-              <p className="font-poppins font-medium text-[12px] text-textDeem">
-                {moment(new Date(data.date), "YYYYMMDD").fromNow()}
-              </p>
-            </div>
+            {data.text && (
+              <div>
+                <div>
+                  <p className="break-words max-w-[400px] pt-[13px] pb-[20px] ps-[63px] pe-[52px] bg-customGrey rounded-[20px] font-poppins font-medium text-[16px]">
+                    {data.text}
+                  </p>
+                  <p className="font-poppins font-medium text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
 
-            <img
-              className=" absolute bottom-[19px] left-[-5px] z-50"
-              src="./cornarwhite.png"
-              alt="cornarwhite"
-            />
+                <img
+                  className=" absolute bottom-[19px] left-[-5px] z-50"
+                  src="./cornarwhite.png"
+                  alt="cornarwhite"
+                />
+              </div>
+            )}
+
+            {data.image && (
+              <div>
+                <div>
+                  <PhotoProvider>
+                    <PhotoView src={data.image}>
+                      <img
+                        src={data.image}
+                        alt="chat img"
+                        className=" w-[60%] mr-auto rounded-lg cursor-pointer"
+                      />
+                    </PhotoView>
+                  </PhotoProvider>
+
+                  <p className="font-poppins font-medium text-left text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         )
       )}
