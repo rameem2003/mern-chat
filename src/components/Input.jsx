@@ -13,6 +13,8 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
+import { MdAudiotrack } from "react-icons/md";
+import { IoDocumentAttach } from "react-icons/io5";
 
 const Input = () => {
   const me = useSelector((state) => state.user.user);
@@ -24,7 +26,8 @@ const Input = () => {
   const storage = getStorage();
   const storageRef = FbstorageRef(storage, `chatimages/${Date.now()}`);
 
-  const handleSend = () => {
+  const handleSend = (e) => {
+    e.preventDefault();
     set(push(ref(db, "chat/")), {
       senderid: me.uid,
       senderName: me.displayName,
@@ -108,6 +111,7 @@ const Input = () => {
               type="file"
               id="uploadFile2"
               className="hidden"
+              accept="image/*"
             />
             <p className="text-xs font-medium text-gray-400 mt-2">
               PNG, JPG SVG, WEBP, and GIF are Allowed.
@@ -126,39 +130,58 @@ const Input = () => {
         </div>
       </div>
       <div className=" flex items-center justify-between pt-[35px]">
-        <div className="w-[93%] relative">
-          <input
-            onChange={(e) => setText(e.target.value)}
-            value={text}
-            className="w-full h-[45px] rounded-[10px] bg-customGrey pl-5 pr-20"
-            type="text"
-            placeholder="Write your massage......"
-            name=""
-            id=""
-          />
-          <CgSmileMouthOpen
-            onClick={() => setPicker(!picker)}
-            size={22}
-            className=" absolute top-[11px] right-[46px] text-emojiGrey cursor-pointer"
-          />
-          <BsCamera
-            onClick={() => setImageModal(true)}
-            size={22}
-            className=" absolute top-[11px] right-[12px] text-emojiGrey cursor-pointer"
-          />
+        <div className="w-full">
+          <form
+            onSubmit={handleSend}
+            action=""
+            className=" w-full flex items-center justify-between"
+          >
+            <div className="w-[93%] relative flex items-center justify-between">
+              <input
+                onChange={(e) => setText(e.target.value)}
+                value={text}
+                className="w-full h-[45px] rounded-[10px] bg-customGrey pl-5 pr-20"
+                type="text"
+                placeholder="Write your massage......"
+                name=""
+                id=""
+              />
+              <div className=" absolute top-[50%] translate-y-[-50%] right-2 flex items-center justify-end gap-2">
+                <CgSmileMouthOpen
+                  onClick={() => setPicker(!picker)}
+                  size={22}
+                  className=" text-emojiGrey cursor-pointer"
+                />
+                <BsCamera
+                  onClick={() => setImageModal(true)}
+                  size={22}
+                  className=" text-emojiGrey cursor-pointer"
+                />
 
-          {picker && (
-            <div className=" absolute top-[-500px] right-0">
-              <EmojiPicker onEmojiClick={handleEmoji} />
+                <MdAudiotrack className=" text-emojiGrey cursor-pointer" />
+                <IoDocumentAttach className=" text-emojiGrey cursor-pointer" />
+              </div>
+              {picker && (
+                <div className=" absolute top-[-500px] right-0">
+                  <EmojiPicker onEmojiClick={handleEmoji} />
+                </div>
+              )}
             </div>
-          )}
+
+            {text ? (
+              <button
+                // onClick={handleSend}
+                className=" flex items-center justify-center w-[45px] h-[45px] rounded-[10px] bg-secondary text-white"
+              >
+                <FaPaperPlane />
+              </button>
+            ) : (
+              <button className=" pointer-events-none opacity-55 flex items-center justify-center w-[45px] h-[45px] rounded-[10px] bg-secondary text-white">
+                <FaPaperPlane />
+              </button>
+            )}
+          </form>
         </div>
-        <button
-          onClick={handleSend}
-          className=" flex items-center justify-center w-[45px] h-[45px] rounded-[10px] bg-secondary text-white"
-        >
-          <FaPaperPlane />
-        </button>
       </div>
     </>
   );

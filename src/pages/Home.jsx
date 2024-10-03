@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <>
       {verify && (
-        <div className=" fixed top-0 left-0 w-full h-screen bg-secondary/90 backdrop-blur-sm flex items-center justify-center">
+        <div className=" fixed top-0 left-0 w-full h-screen bg-secondary/90 backdrop-blur-sm flex items-center justify-center z-[200]">
           <p className=" font-nunito font-bold text-4xl text-white">
             To prevent the potential spam. Please verify your email
           </p>

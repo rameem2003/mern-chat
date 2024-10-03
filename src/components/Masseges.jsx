@@ -5,6 +5,7 @@ import { db } from "../config/firebase.config";
 import moment from "moment";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { MdSimCardDownload } from "react-icons/md";
 
 const Masseges = () => {
   const me = useSelector((state) => state.user.user);
@@ -69,7 +70,15 @@ const Masseges = () => {
 
             {data.image && (
               <div>
-                <div>
+                <div className=" relative group overflow-hidden">
+                  <a
+                    href={data.image}
+                    target="_blank"
+                    className=" duration-300 ease-in-out bg-white shadow-xl p-4 rounded-full w-[50px] h-[50px] flex items-center justify-center text-3xl absolute top-2 right-[-120px] group-hover:right-2"
+                  >
+                    <MdSimCardDownload />
+                  </a>
+
                   <PhotoProvider>
                     <PhotoView src={data.image}>
                       <img
@@ -114,7 +123,14 @@ const Masseges = () => {
 
             {data.image && (
               <div>
-                <div>
+                <div className=" relative group overflow-hidden">
+                  <a
+                    href={data.image}
+                    target="_blank"
+                    className=" duration-300 ease-in-out bg-white shadow-xl p-4 rounded-full w-[50px] h-[50px] flex items-center justify-center text-3xl absolute top-2 left-[-120px] group-hover:left-2"
+                  >
+                    <MdSimCardDownload />
+                  </a>
                   <PhotoProvider>
                     <PhotoView src={data.image}>
                       <img

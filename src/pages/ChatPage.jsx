@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ChatBody from "../components/ChatBody";
 import GroupList from "../components/GroupList";
 import SearchSection from "../components/common/SearchSection";
 import FriendsList from "../components/FriendsList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebase.config";
+import { AuthReducer } from "../redux/featurea/AuthSlice";
 
 const ChatPage = () => {
+  // user data
+  const data = useSelector((state) => state.user.user);
   const chatData = useSelector((state) => state.chat.chat);
+  // dispatch instance
+  const dispatch = useDispatch();
+  // navigation
+  const navigate = useNavigate();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      dispatch(AuthReducer(user));
+    } else {
+      navigate("/login");
+    }
+  });
+
+  useEffect(() => {
+    if (!data) {
+      navigate("/login");
+    }
+  }, [data]);
   return (
     <section className="flex gap-[23px] h-full">
       <div className="w-4/12">
