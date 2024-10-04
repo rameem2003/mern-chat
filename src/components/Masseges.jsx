@@ -95,6 +95,40 @@ const Masseges = () => {
                 </div>
               </div>
             )}
+
+            {data.audio && (
+              <div>
+                <div className=" relative group overflow-hidden">
+                  <audio src={data.audio} controls></audio>
+
+                  <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {data.doc && (
+              <div>
+                <div>
+                  <div className="max-w-[400px] overflow-hidden relative cursor-pointer group">
+                    <img src="/doc_placeholder.png" alt="" />
+
+                    <a
+                      className=" duration-200 ease-in-out group-hover:bottom-2 block absolute w-[50%] text-center bottom-[-100px] left-[50%] translate-x-[-50%] p-3 bg-secondary rounded-xl font-bold text-sm text-white"
+                      href={data.doc}
+                      target="_blank"
+                    >
+                      Download File
+                    </a>
+                  </div>
+
+                  <p className="font-poppins font-medium text-right text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div
@@ -140,6 +174,40 @@ const Masseges = () => {
                       />
                     </PhotoView>
                   </PhotoProvider>
+
+                  <p className="font-poppins font-medium text-left text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {data.audio && (
+              <div>
+                <div className=" relative group overflow-hidden">
+                  <audio src={data.audio} controls></audio>
+
+                  <p className="font-poppins font-medium text-left text-[12px] text-textDeem">
+                    {moment(new Date(data.date), "YYYYMMDD").fromNow()}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {data.doc && (
+              <div>
+                <div>
+                  <div className="max-w-[400px] overflow-hidden relative cursor-pointer group">
+                    <img src="/doc_placeholder.png" alt="" />
+
+                    <a
+                      className=" duration-200 ease-in-out group-hover:bottom-2 block absolute w-[50%] text-center bottom-[-100px] left-[50%] translate-x-[-50%] p-3 bg-secondary rounded-xl font-bold text-sm text-white"
+                      href={data.doc}
+                      target="_blank"
+                    >
+                      Download File
+                    </a>
+                  </div>
 
                   <p className="font-poppins font-medium text-left text-[12px] text-textDeem">
                     {moment(new Date(data.date), "YYYYMMDD").fromNow()}
